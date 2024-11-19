@@ -1,9 +1,12 @@
 import { AppBar, Button, Grid2, Stack, Toolbar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
+import { useAuthStore } from "../store/useAuthStore";
+import { AuthService } from "../services/AuthService";
+import Cookies from "js-cookie";
 const HeaderBar = () => {
+  const { isAuthenticated, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const logoClick = () => {
@@ -13,7 +16,14 @@ const HeaderBar = () => {
     navigate("/item");
   };
 
-  const loginClick = () => {
+  const loginClick = async () => {
+    navigate("/login");
+  };
+
+  const logoutClick = async () => {
+    logout();
+    await AuthService.logout();
+    localStorage.clear();
     navigate("/login");
   };
   return (
@@ -29,9 +39,15 @@ const HeaderBar = () => {
           </Button>
         </Grid2>
         <Grid2 container size={6} justifyContent='flex-end'>
-          <Button color='inherit' onClick={loginClick}>
-            Login
-          </Button>
+          {isAuthenticated ? (
+            <Button color='inherit' onClick={logoutClick}>
+              Logout
+            </Button>
+          ) : (
+            <Button color='inherit' onClick={loginClick}>
+              Login
+            </Button>
+          )}
         </Grid2>
       </Grid2>
       {/* </Toolbar> */}
@@ -40,3 +56,6 @@ const HeaderBar = () => {
 };
 
 export default HeaderBar;
+function logout() {
+  throw new Error("Function not implemented.");
+}

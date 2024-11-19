@@ -24,23 +24,36 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const loginHandle = () => {
+
+  const loginHandle = async () => {
     const loginData = {
       userId: userId,
       password: password,
     };
 
-    AuthService.login(loginData).then(async (res) => {
-      const token = (await res).headers["access"];
-      localStorage.setItem("access", token);
-      const decodeToken = jwtDecode(token);
-      decodeToken.exp;
-      console.log(decodeToken);
-      console.log(dayjs(decodeToken.exp).toDate());
-      //   const { role } = decodeToken;
-      //   console.log(role);
-      navigate("/");
-    });
+    await AuthService.login(loginData)
+      .then((res) => {
+        console.log(res);
+        const token = res.headers["authorization"];
+        console.log(token);
+
+        // 'Bearer '를 제거하고 실제 토큰만 저장
+        const accessToken = token?.replace("Bearer ", "");
+        localStorage.setItem("accessToken", accessToken);
+
+        // 디코딩 및 처리
+        const decodedToken = jwtDecode(accessToken);
+
+        login({
+          userId: decodedToken.userId,
+          role: decodedToken.role,
+          exp: decodedToken.exp,
+        });
+        navigate("/");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <Box className={styles.container}>
@@ -69,7 +82,9 @@ const LoginPage = () => {
             <Button className={styles.button} onClick={loginHandle}>
               로그인
             </Button>
-            <Button className={styles.button}>회원가입</Button>
+            <Button className={styles.button} onClick={() => navigate("/join")}>
+              회원가입
+            </Button>
           </Box>
         </Stack>
       </Box>

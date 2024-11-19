@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
-interface User {
+export interface User {
     userId: string;
     role: string;
     exp: number;
@@ -13,9 +14,9 @@ interface AuthState {
     logout: () => void;
   }
 
-export const useAuthStore = create<AuthState>((set) => ({
- isAuthenticated: false,
+export const useAuthStore = create<AuthState>(devtools((set) => ({
+  isAuthenticated: false,
   user: null,
-  login: (user: User) => set({ isAuthenticated: true, user }), // 사용자 정보 저장
-  logout: () => set({ isAuthenticated: false, user: null }), // 로그아웃
-}));
+  login: (user:User) => set({ isAuthenticated: true, user }),
+  logout: () => set({ isAuthenticated: false, user: null }),
+})));
