@@ -12,9 +12,6 @@ const HeaderBar = () => {
   const logoClick = () => {
     navigate("/");
   };
-  const itemClick = () => {
-    navigate("/item");
-  };
 
   const loginClick = async () => {
     navigate("/login");
@@ -34,8 +31,14 @@ const HeaderBar = () => {
           <Button color='inherit' onClick={logoClick}>
             Logo
           </Button>
-          <Button color='inherit' onClick={itemClick}>
-            item
+          <Button color='inherit' onClick={() => navigate("/sell")}>
+            Sell
+          </Button>
+          <Button color='inherit' onClick={() => navigate("/buy")}>
+            Buy
+          </Button>
+          <Button color='inherit' onClick={() => navigate("/admin")}>
+            Admin
           </Button>
         </Grid2>
         <Grid2 container size={6} justifyContent='flex-end'>
@@ -56,6 +59,3 @@ const HeaderBar = () => {
 };
 
 export default HeaderBar;
-function logout() {
-  throw new Error("Function not implemented.");
-}
