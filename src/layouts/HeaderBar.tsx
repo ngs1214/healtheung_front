@@ -1,14 +1,17 @@
 import { AppBar, Button, Grid2, Stack, Toolbar } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import React, { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import { AuthService } from "../services/AuthService";
-import Cookies from "js-cookie";
+import { menus } from "./memu";
+import { useEffect, useState } from "react";
 const HeaderBar = () => {
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, user } = useAuthStore();
   const navigate = useNavigate();
+  const [menuData, setMenuData] = useState();
 
+  useEffect(() => {
+    makeMenus();
+  }, []);
   const logoClick = () => {
     navigate("/");
   };
@@ -23,6 +26,19 @@ const HeaderBar = () => {
     localStorage.clear();
     navigate("/login");
   };
+  const makeMenus = () => {
+    const list: any = [];
+    menus.map((menu) => {
+      if (menu.role == user?.role || !menu.role) {
+        list.push(
+          <Button color='inherit' onClick={() => navigate(menu.link)}>
+            {menu.title}
+          </Button>
+        );
+      }
+    });
+    setMenuData(list);
+  };
   return (
     <AppBar position='static' style={{ width: "100%", padding: "10px 15px" }}>
       {/* <Toolbar style={{ width: "100%" }}> */}
@@ -31,15 +47,7 @@ const HeaderBar = () => {
           <Button color='inherit' onClick={logoClick}>
             Logo
           </Button>
-          <Button color='inherit' onClick={() => navigate("/sell")}>
-            Sell
-          </Button>
-          <Button color='inherit' onClick={() => navigate("/buy")}>
-            Buy
-          </Button>
-          <Button color='inherit' onClick={() => navigate("/admin")}>
-            Admin
-          </Button>
+          {menuData && menuData}
         </Grid2>
         <Grid2 container size={6} justifyContent='flex-end'>
           {isAuthenticated ? (

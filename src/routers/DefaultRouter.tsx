@@ -6,8 +6,9 @@ import MainPage from "../pages/main/MainPage";
 import JoinPage from "../pages/join/JoinPage";
 import AdminPage from "../pages/admin/AdminPage";
 import AuthRouter from "./AuthRouter";
-import SellPage from "../pages/sell/SellPage";
-import BuyPage from "../pages/buy/BuyPage";
+import SellPage from "../pages/shop/ShopPage";
+import ShopPage from "../pages/shop/ShopPage";
+import AboutPage from "../pages/about/AboutPage";
 
 const DefaultRouter = () => {
   return (
@@ -16,6 +17,15 @@ const DefaultRouter = () => {
       <Route path='/join' element={<JoinPage />} />
       <Route element={<DefaultLayout />}>
         <Route path='/' element={<MainPage />} />
+        <Route path='/main' element={<MainPage />} />
+        <Route
+          path='/admin'
+          element={
+            <AuthRouter redirectPath='/' hasRole='ROLE_ADMIN'>
+              <AdminPage />
+            </AuthRouter>
+          }
+        />
         <Route
           path='/sell'
           element={
@@ -25,18 +35,26 @@ const DefaultRouter = () => {
           }
         />
         <Route
-          path='/buy'
+          path='/about'
           element={
-            <AuthRouter redirectPath='/' hasRole='ROLE_CONSUMER'>
-              <BuyPage />
+            <AuthRouter redirectPath='/'>
+              <AboutPage />
             </AuthRouter>
           }
         />
         <Route
-          path='/admin'
+          path='/shop'
           element={
-            <AuthRouter redirectPath='/' hasRole='ROLE_ADMIN'>
-              <AdminPage />
+            <AuthRouter redirectPath='/'>
+              <ShopPage />
+            </AuthRouter>
+          }
+        />
+        <Route
+          path='/qna'
+          element={
+            <AuthRouter redirectPath='/'>
+              <ShopPage />
             </AuthRouter>
           }
         />
